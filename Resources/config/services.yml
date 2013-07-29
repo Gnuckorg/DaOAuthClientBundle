@@ -1,0 +1,8 @@
+parameters:
+    da.oauthclient.userprovider.class: Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
+    da.oauthclient.user.class:         Da\OAuthClientBundle\Entity\User
+
+services:
+    da.oauthclient.userprovider:
+        class: %da.oauthclient.userprovider.class%
+        arguments: [@fos_user.user_manager, {da: username}, %da.oauthclient.user.class%]
