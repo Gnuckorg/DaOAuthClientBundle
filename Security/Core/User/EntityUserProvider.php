@@ -1,6 +1,15 @@
 <?php
 
-namespace Tessi\OAuthClientBundle\Security\Core\User;
+/**
+ * This file is part of the Da Project.
+ *
+ * (c) Thomas Prelot <tprelot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Da\OAuthClientBundle\Security\Core\User;
 
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;

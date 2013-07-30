@@ -1,8 +1,10 @@
 parameters:
-    da.oauthclient.userprovider.class: Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
-    da.oauthclient.user.class:         Da\OAuthClientBundle\Entity\User
+    da_oauth_client.user_provider.class: Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
+    da_oauth_client.user.class:          Da\OAuthClientBundle\Entity\User
 
 services:
-    da.oauthclient.userprovider:
-        class: %da.oauthclient.userprovider.class%
-        arguments: [@fos_user.user_manager, {da: username}, %da.oauthclient.user.class%]
+    da_oauth_client.user_provider:
+        class: %da_oauth_client.user_provider.class%
+        parent: hwi_oauth.user.provider.fosub_bridge.def
+        arguments: [@fos_user.user_manager, null, %da_oauth_client.user.class%]
+        abstract: true

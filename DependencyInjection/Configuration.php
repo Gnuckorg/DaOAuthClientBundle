@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Da Project.
+ *
+ * (c) Thomas Prelot <tprelot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Da\OAuthClientBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -27,6 +36,20 @@ class Configuration implements ConfigurationInterface
         // in the documentation? Uh? 
         $rootNode
             ->children()
+            ->arrayNode('fosub')
+                ->children()
+                    ->scalarNode('username_iterations')
+                        ->defaultValue(5)
+                        ->cannotBeEmpty()
+                    ->end()
+                    ->arrayNode('properties')
+                        ->isRequired()
+                        ->useAttributeAsKey('name')
+                        ->prototype('scalar')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
             ->arrayNode('resource_owners')
                 ->isRequired()
                 ->useAttributeAsKey('name')

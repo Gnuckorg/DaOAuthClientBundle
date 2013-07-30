@@ -1,12 +1,21 @@
 <?php
 
-namespace Tessi\OAuthClientBundle\Security\Core\User;
+/**
+ * This file is part of the Da Project.
+ *
+ * (c) Thomas Prelot <tprelot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Da\OAuthClientBundle\Security\Core\User;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseUserProvider;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Tessi\OAuthClientBundle\Entity\User;
+use Da\OAuthClientBundle\Entity\User;
 
 /**
  * OAuthUserProvider

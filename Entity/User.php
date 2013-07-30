@@ -1,16 +1,16 @@
 <?php
 
-namespace Tessi\OAuthClientBundle\Entity;
+namespace Da\OAuthClientBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use Tessi\OAuthClientBundle\Security\Core\User\OAuthUserInterface;
+use Da\OAuthClientBundle\Security\Core\User\OAuthUserInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user")
+ * @ORM\Table(name="User")
  */
 class User extends BaseUser implements OAuthUserInterface
 {

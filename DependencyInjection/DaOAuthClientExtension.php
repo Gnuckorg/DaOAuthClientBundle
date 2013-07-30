@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Da Project.
+ *
+ * (c) Thomas Prelot <tprelot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Da\OAuthClientBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,12 +36,18 @@ class DaOAuthClientExtension extends Extension
 
         $resourceOwners = $container->getParameter('hwi_oauth.resource_owners');
         $hwiExtension = new HWIOAuthExtension();
-        foreach ($config['resource_owners'] as $name => $options) 
-        {
+        foreach ($config['resource_owners'] as $name => $options) {
             $resourceOwners[] = $name;
             $hwiExtension->createResourceOwnerService($container, $name, $options);
         }
         $container->setParameter('hwi_oauth.resource_owners', $resourceOwners);
+
+        if (isset($config['fosub'])) {
+            $container
+                ->getDefinition('da_oauth_client.user_provider')
+                    ->replaceArgument(1, $config['fosub']['properties']);
+            ;
+        }
     }
     
     /**
