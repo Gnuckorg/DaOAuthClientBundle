@@ -1,9 +1,15 @@
 parameters:
-    da_oauth_client.user_provider.class: Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
-    da_oauth_client.user.class:          Da\OAuthClientBundle\Entity\User
+    da_oauth_client.user_provider.fosub.class:  Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
+    da_oauth_client.user_provider.memory.class: Da\OAuthClientBundle\Security\Core\User\MemoryUserProvider
+    da_oauth_client.user.fosub.class:           Da\OAuthClientBundle\Entity\FosUser
+    da_oauth_client.user.memory.class:          Da\OAuthClientBundle\Entity\MemoryUser
 
 services:
-    da_oauth_client.user_provider:
-        class: %da_oauth_client.user_provider.class%
+    da_oauth_client.user_provider.fosub:
+        class: %da_oauth_client.user_provider.fosub.class%
         parent: hwi_oauth.user.provider.fosub_bridge.def
         arguments: [@fos_user.user_manager, null, %da_oauth_client.user.class%]
+
+    da_oauth_client.user_provider.memory:
+        class: %da_oauth_client.user_provider.memory.class%
+        arguments: [%da_oauth_client.user.memory.class%]

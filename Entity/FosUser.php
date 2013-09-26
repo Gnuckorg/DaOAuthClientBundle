@@ -9,10 +9,12 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use Da\OAuthClientBundle\Security\Core\User\OAuthUserInterface;
 
 /**
+ * User is the user implementation used by the fosub user provider.
+*
  * @ORM\Entity
  * @ORM\Table(name="User")
  */
-class User extends BaseUser implements OAuthUserInterface
+class FosUser extends BaseUser implements OAuthUserInterface
 {
     /**
      * @ORM\Id

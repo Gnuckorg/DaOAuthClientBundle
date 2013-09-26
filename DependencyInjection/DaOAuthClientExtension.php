@@ -45,9 +45,13 @@ class DaOAuthClientExtension extends Extension
 
         if (isset($config['fosub'])) {
             $container
-                ->getDefinition('da_oauth_client.user_provider')
-                    ->replaceArgument(1, $config['fosub']['properties']);
+                ->getDefinition('da_oauth_client.user_provider.fosub')
+                    ->replaceArgument(1, $config['fosub']['properties'])
+                    ->replaceArgument(3, true)
+                ;
             ;
+        } else {
+            $container->removeDefinition('da_oauth_client.user_provider.fosub');
         }
     }
     

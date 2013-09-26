@@ -18,8 +18,20 @@ Add the bundle and its dependencies in the composer.json file:
 	"require": {
 		// ...
         "hwi/oauth-bundle": "0.3.*@dev",
+        "da/oauth-client-bundle": "dev-master"
+    },
+```
+
+If you want to persist the users with FOSUserBundle:
+
+``` js
+	// composer.json
+
+	"require": {
+		// ...
+        "hwi/oauth-bundle": "0.3.*@dev",
         "da/oauth-client-bundle": "dev-master",
-        "friendsofsymfony/user-bundle": "~2.0@dev"
+        "friendsofsymfony/user-bundle": "dev-master"
     },
 ```
 
@@ -41,7 +53,7 @@ Declare the bundles in your kernel:
         // ...
         new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         new Da\OAuthClientBundle\DaOAuthClientBundle(),
-        new FOS\UserBundle\FOSUserBundle(),
+        //new FOS\UserBundle\FOSUserBundle(), // ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
     );
 ```
 
@@ -59,11 +71,12 @@ Here is the minimal config you will need to use the bundle:
 	    connect:
 	        account_connector: da_oauth_client.user_provider
 
+	# ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
 	# FOSUser Configuration
-	fos_user:
-	    db_driver: orm
-	    firewall_name: secured_area
-	    user_class: Da\OAuthClientBundle\Entity\User    
+	#fos_user:
+	#    db_driver: orm
+	#    firewall_name: secured_area
+	#    user_class: Da\OAuthClientBundle\Entity\User    
 ```
 
 ### Step 4: Import the routing
@@ -82,25 +95,26 @@ You have to import some routes in order to run the bundle:
 	    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
 	    prefix:   /connect
 
+	# ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
 	# FOSUser Routes
-	fos_user_security:
-	    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+	#fos_user_security:
+	#    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
-	fos_user_profile:
-	    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
-	    prefix: /profile
+	#fos_user_profile:
+	#    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+	#    prefix: /profile
 
-	fos_user_register:
-	    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
-	    prefix: /register
+	#fos_user_register:
+	#    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+	#    prefix: /register
 
-	fos_user_resetting:
-	    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
-	    prefix: /resetting
+	#fos_user_resetting:
+	#    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+	#    prefix: /resetting
 
-	fos_user_change_password:
-	    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
-	    prefix: /profile
+	#fos_user_change_password:
+	#    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+	#    prefix: /profile
 ```
 
 Build your own "HWI Resource Owner"
@@ -155,10 +169,10 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
 	            authorization_url: 'https://my-oauth-server-domain/oauth/v2/auth'
 		        access_token_url:  'https://my-oauth-server-domain/oauth/v2/token'
 		        infos_url:         'https://my-oauth-server-domain/api/user'
-		fosub:
-	        username_iterations: 5
-	        properties:
-	            my: username   
+		#fosub:  # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+	    #    username_iterations: 5
+	    #    properties:
+	    #        my: username   
 ```
 
 ### Step 3: Import the routing
@@ -185,8 +199,10 @@ Here is the minimal configuration for the security you will need to use the oaut
 	        FOS\UserBundle\Model\UserInterface: sha512
 
 	    providers:
-	        fos_userbundle:
-	            id: fos_user.user_manager
+	        da_oauth_client:
+            	id: da_oauth_client.user_provider.memory
+            #fos_userbundle: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+	        #    id: fos_user.user_manager
 
 	    firewalls:
 	        dev:
@@ -201,7 +217,9 @@ Here is the minimal configuration for the security you will need to use the oaut
 	                login_path:   "/login"
 	                failure_path: "/login"
 	                oauth_user_provider:
-	                    service: da_oauth_client.user_provider
+	                    service: da_oauth_client.user_provider.memory
+	                #oauth_user_provider: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+	                #    service: da_oauth_client.user_provider.fosub
 	            anonymous: true
 
 	    access_control:
@@ -212,4 +230,4 @@ Here is the minimal configuration for the security you will need to use the oaut
 Other Considerations
 --------------------
 
-* You must have set a database to store a local user which is created at the first authentication with the oauth server (TODO: SHOULD BE CHANGED).
+* You must have set a database to store a local user which is created at the first authentication with the oauth server if you use the FOSUserBundle to persist the users.
