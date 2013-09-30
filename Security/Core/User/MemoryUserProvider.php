@@ -86,6 +86,7 @@ class MemoryUserProvider implements OAuthAwareUserProviderInterface, UserProvide
      */
     public function supportsClass($class)
     {
-        return $class === 'Da\OAuthClientBundle\Entity\MemoryUser';
+        $reflectionClass = new \ReflectionClass($class);
+        return $reflectionClass->isSubclassOf('\Da\OAuthClientBundle\Model\MemoryUser');
     }
 }

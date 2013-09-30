@@ -13,10 +13,10 @@ Installation is a quick 4 steps process!
 Add the bundle and its dependencies in the composer.json file:
 
 ``` js
-	// composer.json
+    // composer.json
 
-	"require": {
-		// ...
+    "require": {
+        // ...
         "hwi/oauth-bundle": "0.3.*@dev",
         "da/oauth-client-bundle": "dev-master"
     },
@@ -25,10 +25,10 @@ Add the bundle and its dependencies in the composer.json file:
 If you want to persist the users with FOSUserBundle:
 
 ``` js
-	// composer.json
+    // composer.json
 
-	"require": {
-		// ...
+    "require": {
+        // ...
         "hwi/oauth-bundle": "0.3.*@dev",
         "da/oauth-client-bundle": "dev-master",
         "friendsofsymfony/user-bundle": "dev-master"
@@ -47,9 +47,9 @@ Update your vendors:
 Declare the bundles in your kernel:
 
 ``` php
-	// app/AppKernel.php
+    // app/AppKernel.php
 
-	$bundles = array(
+    $bundles = array(
         // ...
         new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         new Da\OAuthClientBundle\DaOAuthClientBundle(),
@@ -62,21 +62,21 @@ Declare the bundles in your kernel:
 Here is the minimal config you will need to use the bundle:
 
 ``` yaml
-	# app/config/config.yml
+    # app/config/config.yml
 
-	# HWIOAuth Configuration
-	hwi_oauth:
-	    firewall_name: secured_area
-	    resource_owners:
-	    connect:
-	        account_connector: da_oauth_client.user_provider
+    # HWIOAuth Configuration
+    hwi_oauth:
+        firewall_name: secured_area
+        resource_owners:
+        connect:
+            account_connector: da_oauth_client.user_provider
 
-	# ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-	# FOSUser Configuration
-	#fos_user:
-	#    db_driver: orm
-	#    firewall_name: secured_area
-	#    user_class: Da\OAuthClientBundle\Entity\User    
+    # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+    # FOSUser Configuration
+    #fos_user:
+    #    db_driver: orm
+    #    firewall_name: secured_area
+    #    user_class: Da\OAuthClientBundle\Entity\User    
 ```
 
 ### Step 4: Import the routing
@@ -84,37 +84,37 @@ Here is the minimal config you will need to use the bundle:
 You have to import some routes in order to run the bundle:
 
 ``` yaml
-	# app/config/routing.yml
+    # app/config/routing.yml
 
-	# HWIOAuth Routes
-	hwi_oauth_redirect:
-	    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
-	    prefix:   /connect
+    # HWIOAuth Routes
+    hwi_oauth_redirect:
+        resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+        prefix:   /connect
 
-	hwi_oauth_connect:
-	    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
-	    prefix:   /connect
+    hwi_oauth_connect:
+        resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+        prefix:   /connect
 
-	# ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-	# FOSUser Routes
-	#fos_user_security:
-	#    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+    # FOSUser Routes
+    #fos_user_security:
+    #    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
-	#fos_user_profile:
-	#    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
-	#    prefix: /profile
+    #fos_user_profile:
+    #    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    #    prefix: /profile
 
-	#fos_user_register:
-	#    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
-	#    prefix: /register
+    #fos_user_register:
+    #    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    #    prefix: /register
 
-	#fos_user_resetting:
-	#    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
-	#    prefix: /resetting
+    #fos_user_resetting:
+    #    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    #    prefix: /resetting
 
-	#fos_user_change_password:
-	#    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
-	#    prefix: /profile
+    #fos_user_change_password:
+    #    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    #    prefix: /profile
 ```
 
 Build your own "HWI Resource Owner"
@@ -155,36 +155,36 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
 ### Step 2: Set the config
 
 ``` yaml
-	# app/config/config.yml
+    # app/config/config.yml
 
-	# ...
+    # ...
 
-	# DaOAuthClient Configuration
-	da_oauth_client:
-	    resource_owners:
-	        my:
-	            type:              my
-	            client_id:         adl1fhgf135fsd... # The client id given by the oauth server
-	            client_secret:     bdl4fghf28fsd6... # The client secret given by the oauth server
-	            authorization_url: 'https://my-oauth-server-domain/oauth/v2/auth'
-		        access_token_url:  'https://my-oauth-server-domain/oauth/v2/token'
-		        infos_url:         'https://my-oauth-server-domain/api/user'
-		#fosub:  # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-	    #    username_iterations: 5
-	    #    properties:
-	    #        my: username   
+    # DaOAuthClient Configuration
+    da_oauth_client:
+        resource_owners:
+            my:
+                type:              my
+                client_id:         adl1fhgf135fsd... # The client id given by the oauth server
+                client_secret:     bdl4fghf28fsd6... # The client secret given by the oauth server
+                authorization_url: 'https://my-oauth-server-domain/oauth/v2/auth'
+                access_token_url:  'https://my-oauth-server-domain/oauth/v2/token'
+                infos_url:         'https://my-oauth-server-domain/api/user'
+        #fosub:  # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+        #    username_iterations: 5
+        #    properties:
+        #        my: username   
 ```
 
 ### Step 3: Import the routing
 
 ``` yaml
-	# app/config/routing.yml
+    # app/config/routing.yml
 
-	# ...
+    # ...
 
-	# Login Routes
-	my_login:
-	    pattern: /login/check-my
+    # Login Routes
+    my_login:
+        pattern: /login/check-my
 ```
 
 ### Step 4: Set the security
@@ -192,39 +192,39 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
 Here is the minimal configuration for the security you will need to use the oauth authentication with your resource owner:
 
 ``` yaml
-	# app/config/security.yml
+    # app/config/security.yml
 
-	security:
-	    encoders:
-	        FOS\UserBundle\Model\UserInterface: sha512
+    security:
+        encoders:
+            Symfony\Component\Security\Core\User\User: plaintext
 
-	    providers:
-	        da_oauth_client:
-            	id: da_oauth_client.user_provider.memory
+        providers:
+            da_oauth_client:
+                id: da_oauth_client.user_provider.memory
             #fos_userbundle: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-	        #    id: fos_user.user_manager
+            #    id: fos_user.user_manager
 
-	    firewalls:
-	        dev:
-	            pattern:  ^/(_(profiler|wdt)|css|images|js)/
-	            security: false
+        firewalls:
+            dev:
+                pattern:  ^/(_(profiler|wdt)|css|images|js)/
+                security: false
 
-	        secured_area:
-	            pattern: ^/   # Change this pattern if you do not want to use the SSO for all your routes.
-	            oauth:
-	                resource_owners:
-	                    my: "/login/check-my"
-	                login_path:   "/login"
-	                failure_path: "/login"
-	                oauth_user_provider:
-	                    service: da_oauth_client.user_provider.memory
-	                #oauth_user_provider: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-	                #    service: da_oauth_client.user_provider.fosub
-	            anonymous: true
+            secured_area:
+                pattern: ^/   # Change this pattern if you do not want to use the SSO for all your routes.
+                oauth:
+                    resource_owners:
+                        my: "/login/check-my"
+                    login_path:   "/login"
+                    failure_path: "/login"
+                    oauth_user_provider:
+                        service: da_oauth_client.user_provider.memory
+                    #oauth_user_provider: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
+                    #    service: da_oauth_client.user_provider.fosub
+                anonymous: true
 
-	    access_control:
-	    	- { path: ^/secured/freespace, role: IS_AUTHENTICATED_ANONYMOUSLY } # An insecured path
-	        - { path: ^/secured, role: IS_AUTHENTICATED_FULLY }                 # A secured path
+        access_control:
+            - { path: ^/secured/freespace, role: IS_AUTHENTICATED_ANONYMOUSLY } # An insecured path
+            - { path: ^/secured, role: IS_AUTHENTICATED_FULLY }                 # A secured path
 ```
 
 Other Considerations

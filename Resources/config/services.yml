@@ -2,7 +2,7 @@ parameters:
     da_oauth_client.user_provider.fosub.class:  Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
     da_oauth_client.user_provider.memory.class: Da\OAuthClientBundle\Security\Core\User\MemoryUserProvider
     da_oauth_client.user.fosub.class:           Da\OAuthClientBundle\Entity\FosUser
-    da_oauth_client.user.memory.class:          Da\OAuthClientBundle\Entity\MemoryUser
+    da_oauth_client.user.memory.class:          Da\OAuthClientBundle\Model\MemoryUser
 
 services:
     da_oauth_client.user_provider.fosub:

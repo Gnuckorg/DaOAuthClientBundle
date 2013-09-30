@@ -1,6 +1,6 @@
 <?php
 
-namespace Da\OAuthClientBundle\Entity;
+namespace Da\OAuthClientBundle\Model;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -9,7 +9,7 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use Da\OAuthClientBundle\Security\Core\User\OAuthUserInterface;
 
 /**
- * User is the user implementation used by the memory user provider.
+ * MemoryUser is the user implementation used by the memory user provider.
  *
  * @author Thomas Prelot <tprelot@gmail.com>
  */
