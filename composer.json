@@ -16,7 +16,8 @@
         "symfony/dependency-injection" : ">=2.1,<2.4",
         "symfony/config" : ">=2.1,<2.4",
         "symfony/finder" : ">=2.1,<2.4",
-        "hwi/oauth-bundle": "0.3.*@dev"
+        "hwi/oauth-bundle": "0.3.*@dev",
+        "da/auth-common-bundle": "dev-master"
     },
     "suggest": {
         "friendsofsymfony/user-bundle": "dev-master"
