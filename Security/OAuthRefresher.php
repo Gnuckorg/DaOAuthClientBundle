@@ -22,26 +22,18 @@ use Da\AuthCommonBundle\Security\AuthorizationRefresherInterface;
  */
 class OAuthRefresher implements AuthorizationRefresherInterface
 {
-	/**
-	 * The oauth utils.
-     *
-     * @var OAuthUtils
-	 */
-	protected $oauthUtils;
-
-	/**
-	 * The services' container.
+    /**
+     * The services' container.
      *
      * @var ContainerInterface
-	 */
-	protected $container;
+     */
+    protected $container;
 
     /**
      * Constructor.
      */
-    public function __construct(OAuthUtils $oauthUtils, ContainerInterface $container) 
+    public function __construct(ContainerInterface $container) 
     {
-    	$this->oauthUtils = $oauthUtils;
         $this->container = $container;
     }
 
@@ -50,13 +42,28 @@ class OAuthRefresher implements AuthorizationRefresherInterface
      */
     public function refresh()
     {
-    	$token = $this->container->get('security.context')->getToken();
-    	$resourceOwnerName = $token->getResourceOwnerName();
-    	$refreshToken = $token->getRefreshToken();
-    	$resourceOwners = $this->oauthUtils->getResourceOwners();
+        $token = $this->container->get('security.context')->getToken();
+        $resourceOwnerName = $token->getResourceOwnerName();
+        $refreshToken = $token->getRefreshToken();
 
-    	$accessToken = $resourceOwners[$resourceOwnerName]->refreshAccessToken($refreshToken);
+        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$resourceOwnerName);
+        $response = $resourceOwner->refreshAccessToken($refreshToken);
 
-    	$token->setAccessToken($accessToken);
+        if (!is_array($response)) {
+            $token->setAccessToken($accessToken);
+        } else {
+            $token->setAccessToken($response['access_token']);
+            $token->setRefreshToken($response['refresh_token']);
+            $raw = $token->getRawToken();
+            $raw['access_token'] = $response['access_token'];
+            $raw['refresh_token'] = $response['refresh_token'];
+            $token->setRawToken($raw);
+            //$token->setRoles($response['scope']); // TODO
+        }
+
+        $session = $this->container->get('session');
+        $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
+        $session->set('_security_'.$firewallName, serialize($token));
+        $session->save();
     }
 }

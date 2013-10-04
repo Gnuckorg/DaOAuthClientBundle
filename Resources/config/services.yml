@@ -17,4 +17,4 @@ services:
 
     da_oauth_client.authorization_refresher.oauth:
         class: %da_oauth_client.authorization_refresher.oauth.class%
-        arguments: [hwi_oauth.security.oauth_utils, @service_container]
+        arguments: [@service_container]
