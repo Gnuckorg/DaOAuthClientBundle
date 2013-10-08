@@ -60,6 +60,7 @@ class OAuthRefresher implements AuthorizationRefresherInterface
             $token->setRawToken($raw);
             //$token->setRoles($response['scope']); // TODO
         }
+        $token->setAuthenticated(false);
 
         $session = $this->container->get('session');
         $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');

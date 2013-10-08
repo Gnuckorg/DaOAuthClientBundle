@@ -4,6 +4,7 @@ parameters:
     da_oauth_client.user.fosub.class:                    Da\OAuthClientBundle\Entity\FosUser
     da_oauth_client.user.memory.class:                   Da\OAuthClientBundle\Model\MemoryUser
     da_oauth_client.authorization_refresher.oauth.class: Da\OAuthClientBundle\Security\OAuthRefresher
+    da_oauth_client.event.exception_listener.class:      Da\OAuthClientBundle\Event\ExceptionListener
 
 services:
     da_oauth_client.user_provider.fosub:
@@ -18,3 +19,9 @@ services:
     da_oauth_client.authorization_refresher.oauth:
         class: %da_oauth_client.authorization_refresher.oauth.class%
         arguments: [@service_container]
+
+    da_oauth_client.event.exception_listener:
+        class: %da_oauth_client.event.exception_listener.class%
+        arguments: [@http_kernel, @da_oauth_client.authorization_refresher.oauth]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
