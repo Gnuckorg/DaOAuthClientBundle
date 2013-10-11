@@ -18,6 +18,7 @@ Add the bundle and its dependencies in the composer.json file:
     "require": {
         // ...
         "hwi/oauth-bundle": "0.3.*@dev",
+        "da/auth-common-bundle": "dev-master",
         "da/oauth-client-bundle": "dev-master"
     },
 ```
@@ -30,6 +31,7 @@ If you want to persist the users with FOSUserBundle:
     "require": {
         // ...
         "hwi/oauth-bundle": "0.3.*@dev",
+        "da/auth-common-bundle": "dev-master",
         "da/oauth-client-bundle": "dev-master",
         "friendsofsymfony/user-bundle": "dev-master"
     },
@@ -95,6 +97,12 @@ You have to import some routes in order to run the bundle:
         resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
         prefix:   /connect
 
+    # DaOAuthClient Routes
+    da_oauth_client:
+        resource: "@DaOAuthClientBundle/Controller/"
+        type:     annotation
+        prefix:   /
+
     # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
     # FOSUser Routes
     #fos_user_security:
@@ -134,21 +142,65 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
     /**
      * {@inheritDoc}
      */
-    protected $options = array(
-        'authorization_url'       => 'https://my-default-oauth-server-domain/oauth/v2/auth',
-        'access_token_url'        => 'https://my-default-oauth-server-domain/oauth/v2/token',
-        'infos_url'               => 'https://my-default-oauth-server-domain/api/user',
-    );
-
-    /**
-     * {@inheritDoc}
-     */
     protected $paths = array(
         'identifier'     => 'username',
         'nickname'       => 'username',
         'realname'       => 'username',
         'email'          => 'email',
+        'raw'            => 'raw'
     );
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function configureOptions(OptionsResolverInterface $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults(array(
+            'authorization_url'   => 'https://my-oauth-server-domain/oauth/v2/auth',
+            'access_token_url'    => 'https://my-oauth-server-domain/oauth/v2/token',
+            'revoke_token_url'    => 'https://my-oauth-server-domain/oauth/v2/revoke',
+            'disconnection_url'   => 'https://my-oauth-server-domain/oauth/v2/disconnect',
+            'infos_url'           => 'https://my-oauth-server-domain/api/infos',
+
+            'user_response_class' => '\Tms\Bundle\SsoClientBundle\OAuth\Response\UserResponse',
+        ));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function revokeToken($token)
+    {
+        $parameters = array(
+            'client_id'     => $this->getOption('client_id'),
+            'client_secret' => $this->getOption('client_secret'),
+        );
+
+        /* @var $response \Buzz\Message\Response */
+        $response = $this->httpRequest($this->normalizeUrl($this->getOption('revoke_token_url'), array('token' => $token)), $parameters, array(), 'DELETE');
+
+        return 200 === $response->getStatusCode();
+    }
+
+    /**
+     * Returns the provider's disconnection url
+     *
+     * @param string $redirectUri     The uri to redirect the client back to
+     * @param array  $extraParameters An array of parameters to add to the url
+     *
+     * @return string The disconnection url
+     */
+    public function getDisconnectionUrl($redirectUri, array $extraParameters = array())
+    {
+        $parameters = array_merge(array(
+            'client_id'     => $this->options['client_id'],
+            'redirect_uri'  => $redirectUri
+        ), $extraParameters);
+
+        return $this->normalizeUrl($this->options['disconnection_url'], $parameters);
+    }
 }
 ```
 
@@ -168,7 +220,9 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
                 client_secret:     bdl4fghf28fsd6... # The client secret given by the oauth server
                 authorization_url: 'https://my-oauth-server-domain/oauth/v2/auth'
                 access_token_url:  'https://my-oauth-server-domain/oauth/v2/token'
-                infos_url:         'https://my-oauth-server-domain/api/user'
+                revoke_token_url:  'https://my-oauth-server-domain/oauth/v2/revoke'     # [OPTIONAL]
+                disconnection_url: 'https://my-oauth-server-domain/oauth/v2/disconnect' # [OPTIONAL]
+                infos_url:         'https://my-oauth-server-domain/api/infos'
         #fosub:  # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
         #    username_iterations: 5
         #    properties:
@@ -209,6 +263,14 @@ Here is the minimal configuration for the security you will need to use the oaut
                 pattern:  ^/(_(profiler|wdt)|css|images|js)/
                 security: false
 
+            login_firewall:
+                pattern:    ^/login$
+                anonymous:  ~
+
+            connect_firewall:
+                pattern:    ^/connect
+                anonymous:  ~
+
             secured_area:
                 pattern: ^/   # Change this pattern if you do not want to use the SSO for all your routes.
                 oauth:
@@ -220,11 +282,16 @@ Here is the minimal configuration for the security you will need to use the oaut
                         service: da_oauth_client.user_provider.memory
                     #oauth_user_provider: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
                     #    service: da_oauth_client.user_provider.fosub
+                logout:
+                    # BUG: https://github.com/sensiolabs/SensioDistributionBundle/commit/2a518e7c957b66c9478730ca95f67e16ccdc982b
+                    invalidate_session: false 
                 anonymous: true
 
         access_control:
             - { path: ^/secured/freespace, role: IS_AUTHENTICATED_ANONYMOUSLY } # An insecured path
             - { path: ^/secured, role: IS_AUTHENTICATED_FULLY }                 # A secured path
+            - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
 ```
 
 Other Considerations
