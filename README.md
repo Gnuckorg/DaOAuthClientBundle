@@ -271,10 +271,6 @@ Here is the minimal configuration for the security you will need to use the oaut
                 pattern:    ^/connect
                 anonymous:  ~
 
-            disconnect:
-                pattern:    ^/disconnect
-                anonymous:  ~
-
             secured_area:
                 pattern: ^/   # Change this pattern if you do not want to use the SSO for all your routes.
                 oauth:
