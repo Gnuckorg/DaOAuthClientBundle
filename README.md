@@ -285,7 +285,6 @@ Here is the minimal configuration for the security you will need to use the oaut
                 logout:
                     # BUG: https://github.com/sensiolabs/SensioDistributionBundle/commit/2a518e7c957b66c9478730ca95f67e16ccdc982b
                     invalidate_session: false 
-                anonymous: true
 
         access_control:
             - { path: ^/secured/freespace, role: IS_AUTHENTICATED_ANONYMOUSLY } # An insecured path
