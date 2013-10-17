@@ -263,12 +263,16 @@ Here is the minimal configuration for the security you will need to use the oaut
                 pattern:  ^/(_(profiler|wdt)|css|images|js)/
                 security: false
 
-            login_firewall:
+            login:
                 pattern:    ^/login$
                 anonymous:  ~
 
-            connect_firewall:
+            connect:
                 pattern:    ^/connect
+                anonymous:  ~
+
+            disconnect:
+                pattern:    ^/disconnect
                 anonymous:  ~
 
             secured_area:
