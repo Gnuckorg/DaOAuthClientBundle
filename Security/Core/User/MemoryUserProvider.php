@@ -78,7 +78,7 @@ class MemoryUserProvider implements OAuthAwareUserProviderInterface, UserProvide
      */
     public function refreshUser(UserInterface $user)
     {
-        return $this->loadUserByUsername($user->getUsername());
+        return $user;
     }
 
     /**
