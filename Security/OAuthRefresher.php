@@ -65,6 +65,5 @@ class OAuthRefresher implements AuthorizationRefresherInterface
         $session = $this->container->get('session');
         $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
         $session->set('_security_'.$firewallName, serialize($token));
-        $session->save();
     }
 }
