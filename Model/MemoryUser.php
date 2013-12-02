@@ -23,6 +23,7 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
     protected $credentialsNonExpired = true;
     protected $accountNonLocked = true;
     protected $roles = array();
+    protected $raw = array();
 
     /**
      * {@inheritDoc}
@@ -31,6 +32,8 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
     {
         $this->username = $response->getNickname();
 		$this->email = $response->getEmail();
+        $this->roles = json_decode($response->getRoles(), true);
+        $this->raw = json_decode($response->getRaw(), true);
     }
 
     /**
@@ -73,6 +76,16 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Get the raw data of the user.
+     *
+     * @return The raw data.
+     */
+    public function getRaw()
+    {
+        return $this->raw;
     }
 
     /**
