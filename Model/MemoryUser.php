@@ -33,7 +33,13 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
         $this->username = $response->getNickname();
 		$this->email = $response->getEmail();
         $this->roles = json_decode($response->getRoles(), true);
+        if (!is_array($this->roles)) {
+            $this->roles = array();
+        }
         $this->raw = json_decode($response->getRaw(), true);
+        if (!is_array($this->raw)) {
+            $this->raw = array();
+        }
     }
 
     /**
