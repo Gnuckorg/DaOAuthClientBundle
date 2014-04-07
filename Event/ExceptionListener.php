@@ -49,8 +49,8 @@ class ExceptionListener
         if ($exception instanceof HttpExceptionInterface) {
             $headers = $exception->getHeaders();
             $request = $event->getRequest();
-            
-            if (isset($headers['X-Da-Agent'])) {
+
+            if (isset($headers['X-Da-Agent']) || isset($headers['x-da-agent'])) {
                 $try = $request->headers->get('X-Request-Try', 0);
 
                 if (401 === $exception->getStatusCode() && 0 <= $try) {
