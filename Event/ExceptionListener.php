@@ -72,9 +72,9 @@ class ExceptionListener
 
                     $response->setContent(json_encode($headers, $options));
                 }
-            }
 
-            $event->setResponse($response);
+                $event->setResponse($response);
+            }
         }
     }
 }
