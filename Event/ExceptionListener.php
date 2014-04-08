@@ -53,7 +53,7 @@ class ExceptionListener
             if (isset($headers['X-Da-Agent']) || isset($headers['x-da-agent'])) {
                 $try = $request->headers->get('x-request-try', 0);
 
-                if (401 === $exception->getStatusCode() && 0 <= $try) {
+                if (401 === $exception->getStatusCode() && 0 >= $try) {
                     ini_set('xdebug.max_nesting_level', 200);
                     $request->headers->set('x-request-try', $try + 1);
 
