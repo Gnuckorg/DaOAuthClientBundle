@@ -51,10 +51,10 @@ class ExceptionListener
             $request = $event->getRequest();
 
             if (isset($headers['X-Da-Agent']) || isset($headers['x-da-agent'])) {
-                $try = $request->headers->get('X-Request-Try', 0);
+                $try = $request->headers->get('x-request-try', 0);
 
                 if (401 === $exception->getStatusCode() && 0 <= $try) {
-                    $request->headers->set('X-Request-Try', $try + 1);
+                    $request->headers->set('x-request-try', $try + 1);
 
                     // Retry the request after refreshing the authorization.
                     // Master request because we need to reload the user.
