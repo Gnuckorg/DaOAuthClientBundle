@@ -60,7 +60,7 @@ class ExceptionListener
                     // Retry the request after refreshing the authorization.
                     // Master request because we need to reload the user.
                     $this->authorizationRefresher->refresh();
-                    $response = $this->kernel->handle($event->getRequest());
+                    $response = $this->kernel->handle($request);
                 } else {
                     $response = new Response();
                     $response->setStatusCode(502);
