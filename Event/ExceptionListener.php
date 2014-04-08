@@ -54,6 +54,7 @@ class ExceptionListener
                 $try = $request->headers->get('x-request-try', 0);
 
                 if (401 === $exception->getStatusCode() && 0 <= $try) {
+                    ini_set('xdebug.max_nesting_level', 200);
                     $request->headers->set('x-request-try', $try + 1);
 
                     // Retry the request after refreshing the authorization.
