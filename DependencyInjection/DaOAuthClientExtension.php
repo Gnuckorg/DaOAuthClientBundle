@@ -54,8 +54,8 @@ class DaOAuthClientExtension extends Extension
             $container->removeDefinition('da_oauth_client.user_provider.fosub');
         }
 
-        $container->setParameter('da_oauth_client.login_template', 'DaOAuthClientBundle:Connect:login.html.twig');
-        $container->setParameter('da_oauth_client.default_resource_owner', 'tms');
+        $container->setParameter('da_oauth_client.login_template', $config['login_template']);
+        $container->setParameter('da_oauth_client.default_resource_owner', $config['default_resource_owner']);
     }
     
     /**

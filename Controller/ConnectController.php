@@ -46,19 +46,32 @@ class ConnectController extends BaseConnectController
     public function loginFwdAction(Request $request)
     {
         $connect = $this->container->getParameter('hwi_oauth.connect');
+        $session = $request->getSession();
         $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $error = $this->getErrorForRequest($request);
 
         $loginTemplate = $this->container->getParameter('da_oauth_client.login_template');
         $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
+        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
+        $redirectUri = $request->query->get('redirect_uri');
+        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
+        $authError = $request->query->get('auth_error', '');
 
-        return $this->render($loginTemplate, array(
+        if (!empty($authError)) {
+            $this->container->get('session')->getFlashBag()->add(
+                'error',
+                $authError
+            );
+        }
+
+        return $this->container->get('templating')->renderResponse($loginTemplate, array(
             // Last username entered by the user.
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
             'error'         => $error,
-            'auth_url'      => $this->container->get('router')->generate('hwi_oauth_service_redirect', array('service' => $defaultResourceOwner)),
-            'csrf_token'    => $request->query->get('csrf_token')
+            'auth_url'      => $authUrl,
+            'csrf_token'    => $request->query->get('csrf_token'),
+            'redirect_uri'  => $redirectUri
         ));
     }
 

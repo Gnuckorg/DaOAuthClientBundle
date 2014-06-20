@@ -1,8 +1,8 @@
-{% extends "DaOAuthClientBundle::layout.html.twig" %}
+{% extends "FOSUserBundle::layout.html.twig" %}
 
-{% trans_default_domain 'DaOAuthClientBundle' %}
+{% trans_default_domain 'FOSUserBundle' %}
 
-{% block content %}
+{% block fos_user_content %}
 {% if error %}
     <div>{{ error|trans }}</div>
 {% endif %}
@@ -22,4 +22,4 @@
 
     <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
 </form>
-{% endblock content %}
+{% endblock fos_user_content %}
