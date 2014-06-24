@@ -11,6 +11,7 @@
 
 namespace Da\OAuthClientBundle\Security\Core\User;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseUserProvider;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
@@ -58,6 +59,19 @@ class FOSUBUserProvider extends BaseUserProvider
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
+        $res = $response->getResponse();
+
+        if (isset($res['error'])) {
+            throw new HttpException(
+                401,
+                sprintf(
+                    '%s: %s',
+                    $res['error'],
+                    $res['error_description']
+                )
+            );
+        }
+
         if ($this->persistUser) {
             $user = $this->userManager->findUserByEmail($response->getEmail());
         }

@@ -11,6 +11,7 @@
 
 namespace Da\OAuthClientBundle\Security\Core\User;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -53,6 +54,19 @@ class MemoryUserProvider implements OAuthAwareUserProviderInterface, UserProvide
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
+        $res = $response->getResponse();
+
+        if (isset($res['error'])) {
+            throw new HttpException(
+                401,
+                sprintf(
+                    '%s: %s',
+                    $res['error'],
+                    $res['error_description']
+                )
+            );
+        }
+
         $this->user = new $this->userClassName();
         if ($this->user instanceof OAuthUserInterface) {
             $this->user->setFromResponse($response);
