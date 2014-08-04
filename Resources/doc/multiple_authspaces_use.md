@@ -94,7 +94,7 @@ Here is the minimal configuration for the security you will need to use the oaut
                 pattern: ^/authspace1
                 oauth:
                     resource_owners:
-                        my: "/authspace1/login/check-my"
+                        my_authspace1: "/authspace1/login/check-my"
                     login_path:   "/login/authspace1"
                     failure_path: "/login/authspace1"
                     oauth_user_provider:
@@ -109,7 +109,7 @@ Here is the minimal configuration for the security you will need to use the oaut
                 pattern: ^/authspace2
                 oauth:
                     resource_owners:
-                        my: "/authspace2/login/check-my"
+                        my_authspace2: "/authspace2/login/check-my"
                     login_path:   "/login/authspace2"
                     failure_path: "/login/authspace2"
                     oauth_user_provider:
