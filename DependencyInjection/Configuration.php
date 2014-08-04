@@ -94,11 +94,29 @@ class Configuration implements ConfigurationInterface
                                     ->thenUnset()
                                 ->end()
                             ->end()
-                            ->scalarNode('client_id')
-                                ->cannotBeEmpty()
-                            ->end()
-                            ->scalarNode('client_secret')
-                                ->cannotBeEmpty()
+                            ->scalarNode('client_id')->end()
+                            ->scalarNode('client_secret')->end()
+                            ->arrayNode('identity')
+                                ->children()
+                                    ->scalarNode('selector')
+                                        ->defaultValue('da_oauth_client.identity_selector.default')
+                                    ->end()
+                                    ->scalarNode('default_tokens')->end()
+                                    ->arrayNode('tokens')
+                                        ->isRequired(true)
+                                        ->useAttributeAsKey('name')
+                                        ->prototype('array')
+                                            ->children()
+                                                ->scalarNode('client_id')
+                                                    ->cannotBeEmpty()
+                                                ->end()
+                                                ->scalarNode('client_secret')
+                                                    ->cannotBeEmpty()
+                                                ->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
                             ->end()
                             ->scalarNode('infos_url')
                                 ->validate()
@@ -165,7 +183,7 @@ class Configuration implements ConfigurationInterface
                                 }
 
                                 // for each type at least these have to be set
-                                foreach (array('type', 'client_id', 'client_secret') as $child) {
+                                foreach (array('type') as $child) {
                                     if (!isset($c[$child])) {
                                         return true;
                                     }
@@ -173,7 +191,7 @@ class Configuration implements ConfigurationInterface
 
                                 return false;
                             })
-                            ->thenInvalid("You should set at least the 'type', 'client_id' and the 'client_secret' of a resource owner.")
+                            ->thenInvalid("You should set at least the 'type' of a resource owner.")
                         ->end()
                         ->validate()
                             ->ifTrue(function($c) {

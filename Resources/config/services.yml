@@ -1,4 +1,5 @@
 parameters:
+    da_oauth_client.identity_selector.default.class:     Da\OAuthClientBundle\Identity\BasicIdentitySelector
     da_oauth_client.user_provider.fosub.class:           Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
     da_oauth_client.user_provider.memory.class:          Da\OAuthClientBundle\Security\Core\User\MemoryUserProvider
     da_oauth_client.user.fosub.class:                    Da\OAuthClientBundle\Entity\FosUser
@@ -7,6 +8,9 @@ parameters:
     da_oauth_client.event.exception_listener.class:      Da\OAuthClientBundle\Event\ExceptionListener
 
 services:
+    da_oauth_client.identity_selector.default:
+        class: %da_oauth_client.identity_selector.default.class%
+
     da_oauth_client.user_provider.fosub:
         class: %da_oauth_client.user_provider.fosub.class%
         parent: hwi_oauth.user.provider.fosub_bridge.def
