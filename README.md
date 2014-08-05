@@ -78,7 +78,7 @@ Here is the minimal config you will need to use the bundle:
     #fos_user:
     #    db_driver: orm
     #    firewall_name: secured_area
-    #    user_class: Da\OAuthClientBundle\Entity\User    
+    #    user_class: Da\OAuthClientBundle\Entity\User
 ```
 
 ### Step 4: Import the routing
@@ -226,7 +226,7 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
         #fosub:  # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
         #    username_iterations: 5
         #    properties:
-        #        my: username   
+        #        my: username
 ```
 
 ### Step 3: Import the routing
@@ -284,7 +284,7 @@ Here is the minimal configuration for the security you will need to use the oaut
                     #    service: da_oauth_client.user_provider.fosub
                 logout:
                     # BUG: https://github.com/sensiolabs/SensioDistributionBundle/commit/2a518e7c957b66c9478730ca95f67e16ccdc982b
-                    invalidate_session: false 
+                    invalidate_session: false
 
         access_control:
             - { path: ^/secured/freespace, role: IS_AUTHENTICATED_ANONYMOUSLY } # An insecured path
@@ -297,3 +297,8 @@ Other Considerations
 --------------------
 
 * You must have set a database to store a local user which is created at the first authentication with the oauth server if you use the FOSUserBundle to persist the users.
+
+Documentation
+-------------
+
+Read the [documentation](Resources/doc/index.md) for more informations on the bundle.
