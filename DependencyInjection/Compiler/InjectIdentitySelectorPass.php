@@ -43,7 +43,7 @@ class InjectIdentitySelectorPass implements CompilerPassInterface
 
             if ($class->implementsInterface('Da\OAuthClientBundle\OAuth\ResourceOwner\MultiTokensResourceOwnerInterface')) {
                 $options = $resourceOwner->getArgument(2);
-var_dump($options);
+
                 if (isset($options['identity'])) {
                     $resourceOwner->addArgument(
                         new Reference($options['identity']['selector'])

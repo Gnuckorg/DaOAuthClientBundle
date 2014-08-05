@@ -40,7 +40,7 @@ class BasicIdentitySelector implements IdentitySelectorInterface
     {
         $this->identities = $identities['tokens'];
         $defaultIdentity = $identities['default_tokens'];
-var_dump($identities);
+
         if ($defaultIdentity) {
             $this->select($defaultIdentity);
         }
