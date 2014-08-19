@@ -76,6 +76,41 @@ class ConnectController extends BaseConnectController
     }
 
     /**
+     * @Route("/register/fwd")
+     */
+    public function registerFwdAction(Request $request)
+    {
+        $connect = $this->container->getParameter('hwi_oauth.connect');
+        $session = $request->getSession();
+        $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
+
+        $error = $this->getErrorForRequest($request);
+
+        $registerTemplate = $this->container->getParameter('da_oauth_client.register_template');
+        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
+        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
+        $redirectUri = $request->query->get('redirect_uri');
+        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
+        $authError = $request->query->get('auth_error', '');
+
+        if (!empty($authError)) {
+            $this->container->get('session')->getFlashBag()->add(
+                'error',
+                $authError
+            );
+        }
+
+        return $this->container->get('templating')->renderResponse($registerTemplate, array(
+            // Last username entered by the user.
+            'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+            'error'         => $error,
+            'auth_url'      => $authUrl,
+            'csrf_token'    => $request->query->get('csrf_token'),
+            'redirect_uri'  => $redirectUri
+        ));
+    }
+
+    /**
      * @Route("/disconnect", name="disconnect")
      * @Template()
      */

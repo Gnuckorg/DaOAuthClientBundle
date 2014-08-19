@@ -20,6 +20,9 @@
     <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
     <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
 
-    <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+    <input type="submit" id="_submit" value="{{ 'security.login.submit'|trans }}" />
 </form>
+
+<a href="{{ path('da_oauthclient_connect_registerfwd') }}">{{ 'layout.register'|trans }}</a>
+
 {% endblock content %}
