@@ -8,7 +8,7 @@
 {% endif %}
 
 <form action="{{ auth_url }}" method="post">
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token.login }}" />
     <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
 
     <label for="username">{{ 'security.login.username'|trans }}</label>
@@ -23,6 +23,6 @@
     <input type="submit" id="_submit" value="{{ 'security.login.submit'|trans }}" />
 </form>
 
-<a href="{{ path('da_oauthclient_connect_registerfwd') }}">{{ 'layout.register'|trans }}</a>
+<a href="{{ register_url }}">{{ 'layout.register'|trans }}</a>
 
 {% endblock content %}

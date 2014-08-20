@@ -51,6 +51,16 @@ class ConnectController extends BaseConnectController
 
         $error = $this->getErrorForRequest($request);
 
+        if ($request->query->get('register', false)) {
+            return new RedirectResponse(
+                $this->container->get('router')->generate(
+                    'da_oauthclient_connect_registerfwd',
+                    $request->query->all()
+                ),
+                302
+            );
+        }
+
         $loginTemplate = $this->container->getParameter('da_oauth_client.login_template');
         $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
         $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
@@ -65,14 +75,27 @@ class ConnectController extends BaseConnectController
             );
         }
 
-        return $this->container->get('templating')->renderResponse($loginTemplate, array(
+        $parameters = array(
             // Last username entered by the user.
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
-            'error'         => $error,
             'auth_url'      => $authUrl,
             'csrf_token'    => $request->query->get('csrf_token'),
             'redirect_uri'  => $redirectUri
-        ));
+        );
+
+        return $this->container->get('templating')->renderResponse(
+            $loginTemplate,
+            array_merge(
+                array(
+                    'error'         => $error,
+                    'register_url'  => $this->container->get('router')->generate(
+                        'da_oauthclient_connect_registerfwd',
+                        $parameters
+                    )
+                ),
+                $parameters
+            )
+        );
     }
 
     /**
@@ -100,14 +123,27 @@ class ConnectController extends BaseConnectController
             );
         }
 
-        return $this->container->get('templating')->renderResponse($registerTemplate, array(
+        $parameters = array(
             // Last username entered by the user.
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
-            'error'         => $error,
             'auth_url'      => $authUrl,
             'csrf_token'    => $request->query->get('csrf_token'),
             'redirect_uri'  => $redirectUri
-        ));
+        );
+
+        return $this->container->get('templating')->renderResponse(
+            $registerTemplate,
+            array_merge(
+                array(
+                    'error'     => $error,
+                    'login_url' => $this->container->get('router')->generate(
+                        'da_oauthclient_connect_loginfwd',
+                        $parameters
+                    )
+                ),
+                $parameters
+            )
+        );
     }
 
     /**

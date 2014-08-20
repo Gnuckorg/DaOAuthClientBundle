@@ -8,33 +8,38 @@
 {% endif %}
 
 <form action="{{ auth_url }}" method="post">
-	<div>
-    	<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-    	<input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
-  	</div>
+    <div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token.registration }}" />
+        <input type="hidden" name="_register" value="1" />
+        <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
+        <input type="hidden" name="form_name" value="da_oauth_registration_form" />
+    </div>
 
-	<div>
-	    <label for="username">{{ 'security.login.username'|trans }}</label>
-	    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
-  	</div>
+    <div>
+        <label for="username">{{ 'security.login.username'|trans }}</label>
+        <input type="text" id="username" name="da_oauth_registration_form[username]" value="{{ last_username }}" required="required" />
+    </div>
 
-	<div>
-   	 	<label for="email">{{ 'security.registration.email'|trans }}</label>
-  		<input type="text" id="username" name="_username" required="required" />
-  	</div>
+    <div>
+        <label for="email">{{ 'security.registration.email'|trans }}</label>
+        <input type="text" id="username" name="da_oauth_registration_form[email]" required="required" />
+    </div>
 
-	<div>
-    	<label for="password">{{ 'security.login.password'|trans }}</label>
-    	<input type="password" id="password" name="_password" required="required" />
-  	</div>
+    <div>
+        <label for="password">{{ 'security.login.password'|trans }}</label>
+        <input type="password" id="password" name="da_oauth_registration_form[plainPassword][first]" required="required" />
+    </div>
 
-	<div>
-    	<input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-    	<label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
-  	</div>
+    <div>
+        <label for="password">{{ 'security.login.password_confirmation'|trans }}</label>
+        <input type="password" id="password" name="da_oauth_registration_form[plainPassword][second]" required="required" />
+    </div>
 
-	<div>
-    	<input type="submit" id="_submit" value="{{ 'layout.register'|trans }}" />
-  	</div>
+    <div>
+        <input type="submit" id="_submit" value="{{ 'layout.register'|trans }}" />
+    </div>
 </form>
+
+<a href="{{ login_url }}">{{ 'layout.login'|trans }}</a>
+
 {% endblock content %}

@@ -3,10 +3,13 @@
 
 security:
     login:
-        username: "Nom d'utilisateur :"
-        password: "Mot de passe :"
+        username: "Nom d'utilisateur:"
+        password: "Mot de passe:"
+        password_confirmation: "Confirmation mot de passe:"
         remember_me: Se souvenir de moi
         submit: Connexion
+    registration:
+        email: "E-mail:"
 
 # Global strings
 layout:
