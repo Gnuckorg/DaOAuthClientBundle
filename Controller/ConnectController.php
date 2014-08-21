@@ -116,16 +116,7 @@ class ConnectController extends BaseConnectController
         $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
         $authError = $request->query->get('auth_error', '');
 
-        if (!empty($authError)) {
-            $this->container->get('session')->getFlashBag()->add(
-                'error',
-                $authError
-            );
-        }
-
         $parameters = array(
-            // Last username entered by the user.
-            'last_username' => $session->get(SecurityContext::LAST_USERNAME),
             'auth_url'      => $authUrl,
             'csrf_token'    => $request->query->get('csrf_token'),
             'redirect_uri'  => $redirectUri
@@ -136,10 +127,12 @@ class ConnectController extends BaseConnectController
             array_merge(
                 array(
                     'error'     => $error,
+                    'registration_error' => json_decode($authError, true),
                     'login_url' => $this->container->get('router')->generate(
                         'da_oauthclient_connect_loginfwd',
                         $parameters
-                    )
+                    ),
+                    'form_cached_values' => $request->query->get('form_cached_values', array())
                 ),
                 $parameters
             )
