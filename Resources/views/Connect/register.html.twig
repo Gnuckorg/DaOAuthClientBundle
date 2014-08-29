@@ -1,0 +1,67 @@
+{% extends "DaOAuthClientBundle::layout.html.twig" %}
+
+{% import _self as macros %}
+
+{% trans_default_domain 'DaOAuthClientBundle' %}
+
+{% macro displayError(errors, field) %}
+    {% if errors[field] is defined %}
+        <ul>
+            {% for error in errors[field] %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro displayCachedValue(cachedValues, field) %}{% if cachedValues[field] is defined %}{{ cachedValues[field] }}{% endif %}{% endmacro %}
+
+{% block content %}
+{% if error %}
+    <div>{{ error|trans }}</div>
+{% endif %}
+
+<form action="{{ auth_url }}" method="post">
+    <div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token.registration }}" />
+        <input type="hidden" name="_register" value="1" />
+        <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
+        <input type="hidden" name="form_name" value="da_oauth_registration_form" />
+    </div>
+
+    <div>
+        {{ macros.displayError(registration_error, 'main') }}
+    </div>
+
+    <div>
+        {{ macros.displayError(registration_error, 'username') }}
+        <label for="username">{{ 'security.login.username'|trans }}</label>
+        <input type="text" id="username" name="da_oauth_registration_form[username]" value="{{ macros.displayCachedValue(form_cached_values, 'username') }}" />
+    </div>
+
+    <div>
+        {{ macros.displayError(registration_error, 'email') }}
+        <label for="email">{{ 'security.registration.email'|trans }}</label>
+        <input type="text" id="username" name="da_oauth_registration_form[email]" value="{{ macros.displayCachedValue(form_cached_values, 'email') }}" required="required" />
+    </div>
+
+    <div>
+        {{ macros.displayError(registration_error, 'plainPassword.first') }}
+        <label for="password">{{ 'security.login.password'|trans }}</label>
+        <input type="password" id="password" name="da_oauth_registration_form[plainPassword][first]" required="required" />
+    </div>
+
+    <div>
+        {{ macros.displayError(registration_error, 'plainPassword.second') }}
+        <label for="password">{{ 'security.login.password_confirmation'|trans }}</label>
+        <input type="password" id="password" name="da_oauth_registration_form[plainPassword][second]" required="required" />
+    </div>
+
+    <div>
+        <input type="submit" id="_submit" value="{{ 'layout.register'|trans }}" />
+    </div>
+</form>
+
+<a href="{{ login_url }}">{{ 'layout.login'|trans }}</a>
+
+{% endblock content %}
