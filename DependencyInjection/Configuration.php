@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('login_template')
                     ->defaultValue('DaOAuthClientBundle:Connect:login.html.twig')
                 ->end()
-                ->scalarNode('register_template')
+                ->scalarNode('registration_template')
                     ->defaultValue('DaOAuthClientBundle:Connect:register.html.twig')
                 ->end()
                 ->scalarNode('default_resource_owner')

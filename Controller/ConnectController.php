@@ -79,7 +79,7 @@ class ConnectController extends BaseConnectController
             // Last username entered by the user.
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
             'auth_url'      => $authUrl,
-            'csrf_token'    => $request->query->get('csrf_token'),
+            'csrf_token'    => $request->query->get('csrf_token', null),
             'redirect_uri'  => $redirectUri
         );
 
@@ -109,7 +109,7 @@ class ConnectController extends BaseConnectController
 
         $error = $this->getErrorForRequest($request);
 
-        $registerTemplate = $this->container->getParameter('da_oauth_client.register_template');
+        $registrationTemplate = $this->container->getParameter('da_oauth_client.registration_template');
         $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
         $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
         $redirectUri = $request->query->get('redirect_uri');
@@ -118,12 +118,12 @@ class ConnectController extends BaseConnectController
 
         $parameters = array(
             'auth_url'      => $authUrl,
-            'csrf_token'    => $request->query->get('csrf_token'),
+            'csrf_token'    => $request->query->get('csrf_token', null),
             'redirect_uri'  => $redirectUri
         );
 
         return $this->container->get('templating')->renderResponse(
-            $registerTemplate,
+            $registrationTemplate,
             array_merge(
                 array(
                     'error'     => $error,
