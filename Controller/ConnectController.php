@@ -45,10 +45,6 @@ class ConnectController extends BaseConnectController
      */
     public function loginFwdAction(Request $request)
     {
-        $connect = $this->container->getParameter('hwi_oauth.connect');
-        $session = $request->getSession();
-        $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
-
         $error = $this->getErrorForRequest($request);
 
         if ($request->query->get('register', false)) {
@@ -75,6 +71,7 @@ class ConnectController extends BaseConnectController
             );
         }
 
+        $session = $request->getSession();
         $parameters = array(
             // Last username entered by the user.
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
@@ -103,10 +100,6 @@ class ConnectController extends BaseConnectController
      */
     public function registerFwdAction(Request $request)
     {
-        $connect = $this->container->getParameter('hwi_oauth.connect');
-        $session = $request->getSession();
-        $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
-
         $error = $this->getErrorForRequest($request);
 
         $registrationTemplate = $this->container->getParameter('da_oauth_client.registration_template');
