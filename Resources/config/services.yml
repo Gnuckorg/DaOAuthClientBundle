@@ -1,5 +1,6 @@
 parameters:
     da_oauth_client.identity_selector.default.class:     Da\OAuthClientBundle\Identity\BasicIdentitySelector
+    da_oauth_client.request.processor.class:             Da\OAuthClientBundle\Request\RequestProcessor
     da_oauth_client.user_provider.fosub.class:           Da\OAuthClientBundle\Security\Core\User\FOSUBUserProvider
     da_oauth_client.user_provider.memory.class:          Da\OAuthClientBundle\Security\Core\User\MemoryUserProvider
     da_oauth_client.user.fosub.class:                    Da\OAuthClientBundle\Entity\FosUser
@@ -10,6 +11,10 @@ parameters:
 services:
     da_oauth_client.identity_selector.default:
         class: %da_oauth_client.identity_selector.default.class%
+
+    da_oauth_client.request.processor:
+        class: %da_oauth_client.request.processor.class%
+        arguments: [@hwi_oauth.http_client, @session]
 
     da_oauth_client.user_provider.fosub:
         class: %da_oauth_client.user_provider.fosub.class%
