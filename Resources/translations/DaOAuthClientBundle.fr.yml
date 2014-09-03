@@ -1,5 +1,5 @@
 # Security
-"Bad credentials": Nom d'utilisateur ou mot de passe incorrect
+"Bad credentials": "Nom d'utilisateur ou mot de passe incorrect"
 
 security:
     login:
@@ -8,6 +8,7 @@ security:
         password_confirmation: "Confirmation mot de passe:"
         remember_me: Se souvenir de moi
         submit: Connexion
+        fail: L'authentification a échouée
     registration:
         email: "E-mail:"
 

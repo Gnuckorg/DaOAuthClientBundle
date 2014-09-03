@@ -8,6 +8,7 @@ security:
         password_confirmation: "Password confirmation:"
         remember_me: Remember me
         submit: Login
+        fail: The authentication failed
     registration:
         email: "E-mail:"
 
