@@ -11,6 +11,7 @@ security:
         fail: L'authentification a échouée
     registration:
         email: "E-mail:"
+    error: Une erreur est survenue
 
 # Global strings
 layout:
