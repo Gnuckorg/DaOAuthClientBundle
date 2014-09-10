@@ -25,58 +25,33 @@ class ProxyController extends ContainerAware
      */
     public function loginAction(Request $request)
     {
-        $session = $request->getSession();
-        $securityContext = $this->container->get('security.context');
+        return $this->processProxy($request);
+    }
 
-        $defaultResourceOwnerName = $this->container->getParameter('da_oauth_client.default_resource_owner');
-        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwnerName);
-
-        // Format the auth request parameters.
-        $requestParameters = $request->request->all();
-        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
-        $errorUrl = $this->container->get('router')->generate('da_oauthclient_proxy_error', array(), true);
-        $parsedErrorUrl = parse_url($errorUrl);
-        $parameters = array(
-            '_username'    => $requestParameters['_username'],
-            '_password'    => $requestParameters['_password'],
-            '_remember_me' => isset($requestParameters['_remember_me']) && $requestParameters['_remember_me'] ? true : false,
-            'error_path'   => $parsedErrorUrl['path']
+    /**
+     * @Route("/register")
+     */
+    public function registerAction(Request $request)
+    {
+        return $this->processProxy(
+            $request,
+            array('account' => 'registration'),
+            'da_oauth_registration_form',
+            false
         );
+    }
 
-        // Logout.
-        $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
-        $securityContext->setToken(null);
-        $session->invalidate();
-        
-        // Replace login target path to avoid loading a page for nothing.
-        $targetPathKey = sprintf('_security.%s.target_path', $firewallName);
-        $targetPathBackup = $session->get($targetPathKey);
-        $successUrl = $this->container->get('router')->generate('da_oauthclient_proxy_success', array(), true);
-        $parsedSuccessUrl = parse_url($successUrl);
-        $targetPath = preg_replace('/^\/[a-z_]*\.php/', '', $parsedSuccessUrl['path']);
-        $session->set($targetPathKey, $targetPath);
-
-        // Process auth request.
-        $authUrl = $this->container->get('hwi_oauth.security.oauth_utils')->getAuthorizationUrl($request, $defaultResourceOwner, null, $parameters);
-        $response = $this->container->get('da_oauth_client.request.processor')->process($authUrl);
-        $session->set($targetPathKey, $targetPathBackup);
-        $content = array(
-            'status' => ProxyController::RESPONSE_STATUS_OK,
-            'content' => 'ok'
+    /**
+     * @Route("/profile")
+     */
+    public function profileAction(Request $request)
+    {
+        return $this->processProxy(
+            $request,
+            array('account' => 'profile'),
+            'da_oauth_profile_form',
+            false
         );
-
-        if (401 === $response->getStatusCode()) {
-            $content = json_decode($response->getContent(), true);
-        }
-
-        // Re-up the security token.
-        $token = $session->get('_security_'.$firewallName, null);
-        if ($token) {
-            $token = unserialize($token);
-            $securityContext->setToken($token);
-        }
-
-        return $this->buildProxyResponse($content ? $content : array());
     }
 
     /**
@@ -114,48 +89,6 @@ class ProxyController extends ContainerAware
     }
 
     /**
-     * @Route("/registration")
-     */
-    public function registerAction(Request $request)
-    {
-        // TODO.
-        /*$connect = $this->container->getParameter('hwi_oauth.connect');
-        $session = $request->getSession();
-        $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
-
-        $error = $this->getErrorForRequest($request);
-
-        $registrationTemplate = $this->container->getParameter('da_oauth_client.registration_template');
-        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
-        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
-        $redirectUri = $request->query->get('redirect_uri');
-        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
-        $authError = $request->query->get('auth_error', '');
-
-        $parameters = array(
-            'auth_url'      => $authUrl,
-            'csrf_token'    => $request->query->get('csrf_token', null),
-            'redirect_uri'  => $redirectUri
-        );
-
-        return $this->container->get('templating')->renderResponse(
-            $registrationTemplate,
-            array_merge(
-                array(
-                    'error'     => $error,
-                    'registration_error' => json_decode($authError, true),
-                    'login_url' => $this->container->get('router')->generate(
-                        'da_oauthclient_connect_loginfwd',
-                        $parameters
-                    ),
-                    'form_cached_values' => $request->query->get('form_cached_values', array())
-                ),
-                $parameters
-            )
-        );*/
-    }
-
-    /**
      * @Route("/disconnect")
      * @Template()
      */
@@ -167,35 +100,127 @@ class ProxyController extends ContainerAware
     }
 
     /**
-     * Build the proxy response.
+     * Process the proxy.
      *
-     * @param array $content The content of the response.
+     * @param Request $request              The request.
+     * @param array   $additionalParameters The optional additional parameters.
      *
      * @return Response The response.
      */
-    protected function buildProxyResponse(array $content)
+    protected function processProxy(
+        Request $request,
+        array $additionalParameters = array(),
+        $formName = '',
+        $logout = true
+    )
+    {
+        $session = $request->getSession();
+        $securityContext = $this->container->get('security.context');
+
+        $defaultResourceOwnerName = $this->container->getParameter('da_oauth_client.default_resource_owner');
+        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwnerName);
+
+        // Format the auth request parameters.
+        $requestParameters = $request->request->all();
+        if (!empty($formName)) {
+            $requestParameters = array(
+                $formName => $requestParameters,
+                'form_name' => $formName
+            );
+        }
+        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
+        $errorUrl = $this->container->get('router')->generate('da_oauthclient_proxy_error', array(), true);
+        $parsedErrorUrl = parse_url($errorUrl);
+        $parameters = array_merge(
+            $requestParameters,
+            array('error_path' => $parsedErrorUrl['path']),
+            $additionalParameters
+        );
+
+        // Logout.
+        if ($logout) {
+            $securityContext->setToken(null);
+            $session->invalidate();
+        }
+        
+        // Replace login target path to avoid loading a page for nothing.
+        $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
+        $targetPathKey = sprintf('_security.%s.target_path', $firewallName);
+        $targetPathBackup = $session->get($targetPathKey);
+        $successUrl = $this->container->get('router')->generate('da_oauthclient_proxy_success', array(), true);
+        $parsedSuccessUrl = parse_url($successUrl);
+        $targetPath = preg_replace('/^\/[a-z_]*\.php/', '', $parsedSuccessUrl['path']);
+        $session->set($targetPathKey, $targetPath);
+
+        // Process auth request.
+        $authUrl = $this->container->get('hwi_oauth.security.oauth_utils')->getAuthorizationUrl($request, $defaultResourceOwner, null, $parameters);
+        $response = $this->container->get('da_oauth_client.request.processor')->process($authUrl);
+        $session->set($targetPathKey, $targetPathBackup);
+        $content = array(
+            'status' => ProxyController::RESPONSE_STATUS_OK,
+            'content' => 'ok'
+        );
+        $statusCode = $response->getStatusCode();
+
+        if (400 <= $statusCode) {
+            $content = json_decode($response->getContent(), true);
+        }
+
+        // Re-up the security token.
+        $token = $session->get('_security_'.$firewallName, null);
+        if ($token) {
+            $token = unserialize($token);
+            $securityContext->setToken($token);
+        }
+
+        return $this->buildProxyResponse($statusCode, $content ? $content : array());
+    }
+
+    /**
+     * Build the proxy response.
+     *
+     * @param integer $statusCode The HTTP status code.
+     * @param array   $content    The content of the response.
+     *
+     * @return Response The response.
+     */
+    protected function buildProxyResponse($statusCode = 200, array $content = array())
     {
         $token = $this->container->get('security.context')->getToken();
-        $statusCode = 200;
 
-        if (null === $token || $token instanceof AnonymousToken || !$token->isAuthenticated()) {
-            if (!isset($content['status']) || ProxyController::RESPONSE_STATUS_OK === $content['status']) {
+        if (200 === $statusCode) {
+            if (null === $token || $token instanceof AnonymousToken || !$token->isAuthenticated()) {
+                if (!isset($content['status']) || ProxyController::RESPONSE_STATUS_OK === $content['status']) {
+                    $content = array(
+                        'status' => ProxyController::RESPONSE_STATUS_ERRORED,
+                        'content' => 'security.login.fail'
+                    );
+
+                    $statusCode = 401;
+                }
+            }
+        }
+
+        if (!isset($content['status']) ||
+            (ProxyController::RESPONSE_STATUS_ERRORED === $content['status'] && $statusCode === 200)
+        ) {
+            $statusCode = 500;
+
+            if (!isset($content['content'])) {
                 $content = array(
                     'status' => ProxyController::RESPONSE_STATUS_ERRORED,
-                    'content' => 'security.login.fail'
+                    'content' => 'security.error'
                 );
             }
         }
 
-        $content['content'] = $this->translate($content['content']);
-
-        if (ProxyController::RESPONSE_STATUS_ERRORED === $content['status']) {
-            $statusCode = 401;
+        if (isset($content['content'])) {
+            $content['content'] = $this->translate($content['content']);
         }
 
         return new Response(
             json_encode($content),
-            $statusCode,
+            $statusCode !== 204 ? $statusCode : 200,
             array(
                 'Content-Type: application/json'
             )
@@ -219,7 +244,7 @@ class ProxyController extends ContainerAware
             );
         } else {
             foreach ($object as $key => $value) {
-                $object[$key] = $this->translate($object);
+                $object[$key] = $this->translate($value);
             }
         }
 
