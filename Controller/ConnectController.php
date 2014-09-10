@@ -46,11 +46,21 @@ class ConnectController extends BaseConnectController
     public function loginFwdAction(Request $request)
     {
         $error = $this->getErrorForRequest($request);
+        $account = $request->query->get('account', false);
 
-        if ($request->query->get('register', false)) {
+        if ($account) {
+            switch ($account) {
+                case 'profile':
+                    $route = 'da_oauthclient_connect_profilefwd';
+                    
+                    break;
+                default:
+                    $route = 'da_oauthclient_connect_registerfwd';
+            }
+
             return new RedirectResponse(
                 $this->container->get('router')->generate(
-                    'da_oauthclient_connect_registerfwd',
+                    $route,
                     $request->query->all()
                 ),
                 302
@@ -130,6 +140,44 @@ class ConnectController extends BaseConnectController
                 $parameters
             )
         );
+    }
+
+    /**
+     * @Route("/profile/fwd")
+     */
+    public function profileFwdAction(Request $request)
+    {
+        // TODO: implement action and views.
+        /*$error = $this->getErrorForRequest($request);
+
+        $registrationTemplate = $this->container->getParameter('da_oauth_client.registration_template');
+        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
+        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
+        $redirectUri = $request->query->get('redirect_uri');
+        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
+        $authError = $request->query->get('auth_error', '');
+
+        $parameters = array(
+            'auth_url'      => $authUrl,
+            'csrf_token'    => $request->query->get('csrf_token', null),
+            'redirect_uri'  => $redirectUri
+        );
+
+        return $this->container->get('templating')->renderResponse(
+            $registrationTemplate,
+            array_merge(
+                array(
+                    'error'     => $error,
+                    'registration_error' => json_decode($authError, true),
+                    'login_url' => $this->container->get('router')->generate(
+                        'da_oauthclient_connect_loginfwd',
+                        $parameters
+                    ),
+                    'form_cached_values' => $request->query->get('form_cached_values', array())
+                ),
+                $parameters
+            )
+        );*/
     }
 
     /**
