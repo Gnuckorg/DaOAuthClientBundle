@@ -56,9 +56,10 @@ class DaOAuthClientExtension extends Extension
 
         $container->setParameter('da_oauth_client.login_template', $config['login_template']);
         $container->setParameter('da_oauth_client.registration_template', $config['registration_template']);
+        $container->setParameter('da_oauth_client.profile_template', $config['profile_template']);
         $container->setParameter('da_oauth_client.default_resource_owner', $config['default_resource_owner']);
     }
-    
+
     /**
      * {@inheritdoc}
      */

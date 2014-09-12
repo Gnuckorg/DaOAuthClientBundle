@@ -18,4 +18,5 @@ layout:
     logout: Logout
     login: Login
     register: Register
+    profile: Validate
     logged_in_as: Logged in as %username%

@@ -30,29 +30,29 @@
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'main') }}
+        {{ macros.displayError(account_error, 'main') }}
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'username') }}
+        {{ macros.displayError(account_error, 'username') }}
         <label for="username">{{ 'security.login.username'|trans }}</label>
         <input type="text" id="username" name="da_oauth_registration_form[username]" value="{{ macros.displayCachedValue(form_cached_values, 'username') }}" />
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'email') }}
+        {{ macros.displayError(account_error, 'email') }}
         <label for="email">{{ 'security.registration.email'|trans }}</label>
         <input type="text" id="username" name="da_oauth_registration_form[email]" value="{{ macros.displayCachedValue(form_cached_values, 'email') }}" required="required" />
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'plainPassword.first') }}
+        {{ macros.displayError(account_error, 'plainPassword.first') }}
         <label for="password">{{ 'security.login.password'|trans }}</label>
         <input type="password" id="password" name="da_oauth_registration_form[plainPassword][first]" required="required" />
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'plainPassword.second') }}
+        {{ macros.displayError(account_error, 'plainPassword.second') }}
         <label for="password">{{ 'security.login.password_confirmation'|trans }}</label>
         <input type="password" id="password" name="da_oauth_registration_form[plainPassword][second]" required="required" />
     </div>
