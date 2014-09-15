@@ -30,10 +30,10 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('da_oauth_client');
 
         // DUPLICATED FROM THE HWIOAUTHCLIENTBUNDLE.
-        // because a list of resource owners is defined 
+        // because a list of resource owners is defined
         // in the bundle to prevent the addition of custom
         // resource owner. You can see a custom resource owner
-        // in the documentation? Uh? 
+        // in the documentation? Uh?
         $rootNode
             ->children()
                 ->scalarNode('login_template')
@@ -41,6 +41,9 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('registration_template')
                     ->defaultValue('DaOAuthClientBundle:Connect:register.html.twig')
+                ->end()
+                ->scalarNode('profile_template')
+                    ->defaultValue('DaOAuthClientBundle:Connect:profile.html.twig')
                 ->end()
                 ->scalarNode('default_resource_owner')
                     ->isRequired(true)
