@@ -46,15 +46,9 @@
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'plainPassword.first') }}
+        {{ macros.displayError(registration_error, 'current_password') }}
         <label for="password">{{ 'security.login.password'|trans }}</label>
-        <input type="password" id="password" name="da_oauth_registration_form[plainPassword][first]" required="required" />
-    </div>
-
-    <div>
-        {{ macros.displayError(registration_error, 'plainPassword.second') }}
-        <label for="password">{{ 'security.login.password_confirmation'|trans }}</label>
-        <input type="password" id="password" name="da_oauth_registration_form[plainPassword][second]" required="required" />
+        <input type="password" id="password" name="da_oauth_registration_form[current_password]" required="required" />
     </div>
 
     <div>
