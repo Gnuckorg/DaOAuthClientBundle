@@ -18,4 +18,5 @@ layout:
     logout: Déconnexion
     login: Connexion
     register: Inscription
+    profile: Valider
     logged_in_as: Connecté en tant que %username%

@@ -23,36 +23,36 @@
 
 <form action="{{ auth_url }}" method="post">
     <div>
-        {#<input type="hidden" name="_csrf_token" value="{{ csrf_token.registration }}" />#}
+        {#<input type="hidden" name="_csrf_token" value="{{ csrf_token.profile }}" />#}
         <input type="hidden" name="account" value="profile" />
         <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
-        <input type="hidden" name="form_name" value="da_oauth_registration_form" />
+        <input type="hidden" name="form_name" value="da_oauth_profile_form" />
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'main') }}
+        {{ macros.displayError(account_error, 'main') }}
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'username') }}
+        {{ macros.displayError(account_error, 'username') }}
         <label for="username">{{ 'security.login.username'|trans }}</label>
-        <input type="text" id="username" name="da_oauth_registration_form[username]" value="{{ macros.displayCachedValue(form_cached_values, 'username') }}" />
+        <input type="text" id="username" name="da_oauth_profile_form[username]" value="{{ macros.displayCachedValue(form_cached_values, 'username') }}" />
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'email') }}
+        {{ macros.displayError(account_error, 'email') }}
         <label for="email">{{ 'security.registration.email'|trans }}</label>
-        <input type="text" id="username" name="da_oauth_registration_form[email]" value="{{ macros.displayCachedValue(form_cached_values, 'email') }}" required="required" />
+        <input type="text" id="username" name="da_oauth_profile_form[email]" value="{{ macros.displayCachedValue(form_cached_values, 'email') }}" required="required" />
     </div>
 
     <div>
-        {{ macros.displayError(registration_error, 'current_password') }}
+        {{ macros.displayError(account_error, 'current_password') }}
         <label for="password">{{ 'security.login.password'|trans }}</label>
         <input type="password" id="password" name="da_oauth_registration_form[current_password]" required="required" />
     </div>
 
     <div>
-        <input type="submit" id="_submit" value="{{ 'layout.register'|trans }}" />
+        <input type="submit" id="_submit" value="{{ 'layout.profile'|trans }}" />
     </div>
 </form>
 

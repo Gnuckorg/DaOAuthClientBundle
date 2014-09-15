@@ -52,7 +52,7 @@ class ConnectController extends BaseConnectController
             switch ($account) {
                 case 'profile':
                     $route = 'da_oauthclient_connect_profilefwd';
-                    
+
                     break;
                 default:
                     $route = 'da_oauthclient_connect_registerfwd';
@@ -110,36 +110,9 @@ class ConnectController extends BaseConnectController
      */
     public function registerFwdAction(Request $request)
     {
-        $error = $this->getErrorForRequest($request);
+        $template = $this->container->getParameter('da_oauth_client.registration_template');
 
-        $registrationTemplate = $this->container->getParameter('da_oauth_client.registration_template');
-        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
-        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
-        $redirectUri = $request->query->get('redirect_uri');
-        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
-        $authError = $request->query->get('auth_error', '');
-
-        $parameters = array(
-            'auth_url'      => $authUrl,
-            'csrf_token'    => $request->query->get('csrf_token', null),
-            'redirect_uri'  => $redirectUri
-        );
-
-        return $this->container->get('templating')->renderResponse(
-            $registrationTemplate,
-            array_merge(
-                array(
-                    'error'     => $error,
-                    'registration_error' => json_decode($authError, true),
-                    'login_url' => $this->container->get('router')->generate(
-                        'da_oauthclient_connect_loginfwd',
-                        $parameters
-                    ),
-                    'form_cached_values' => $request->query->get('form_cached_values', array())
-                ),
-                $parameters
-            )
-        );
+        return $this->buildAccountResponse($request, $template);
     }
 
     /**
@@ -147,37 +120,9 @@ class ConnectController extends BaseConnectController
      */
     public function profileFwdAction(Request $request)
     {
-        // TODO: implement action and views.
-        /*$error = $this->getErrorForRequest($request);
+        $template = $this->container->getParameter('da_oauth_client.profile_template');
 
-        $registrationTemplate = $this->container->getParameter('da_oauth_client.registration_template');
-        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
-        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
-        $redirectUri = $request->query->get('redirect_uri');
-        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
-        $authError = $request->query->get('auth_error', '');
-
-        $parameters = array(
-            'auth_url'      => $authUrl,
-            'csrf_token'    => $request->query->get('csrf_token', null),
-            'redirect_uri'  => $redirectUri
-        );
-
-        return $this->container->get('templating')->renderResponse(
-            $registrationTemplate,
-            array_merge(
-                array(
-                    'error'     => $error,
-                    'registration_error' => json_decode($authError, true),
-                    'login_url' => $this->container->get('router')->generate(
-                        'da_oauthclient_connect_loginfwd',
-                        $parameters
-                    ),
-                    'form_cached_values' => $request->query->get('form_cached_values', array())
-                ),
-                $parameters
-            )
-        );*/
+        return $this->buildAccountResponse($request, $template);
     }
 
     /**
@@ -195,5 +140,45 @@ class ConnectController extends BaseConnectController
         );
 
         return new RedirectResponse($disconnectionUrl);
+    }
+
+    /**
+     * Build an account response.
+     *
+     * @param Request $request  The request.
+     * @param string  $template The name of the template to use for the view response.
+     *
+     * @param Response The response.
+     */
+    protected function buildAccountResponse(Request $request, $template)
+    {
+        $error = $this->getErrorForRequest($request);
+        $defaultResourceOwner = $this->container->getParameter('da_oauth_client.default_resource_owner');
+        $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwner);
+        $redirectUri = $request->query->get('redirect_uri');
+        $authUrl = $resourceOwner->getAuthorizationUrl($redirectUri);
+        $authError = $request->query->get('auth_error', '');
+
+        $parameters = array(
+            'auth_url'      => $authUrl,
+            'csrf_token'    => $request->query->get('csrf_token', null),
+            'redirect_uri'  => $redirectUri
+        );
+
+        return $this->container->get('templating')->renderResponse(
+            $template,
+            array_merge(
+                array(
+                    'error' => $error,
+                    'account_error' => json_decode($authError, true),
+                    'login_url' => $this->container->get('router')->generate(
+                        'da_oauthclient_connect_loginfwd',
+                        $parameters
+                    ),
+                    'form_cached_values' => $request->query->get('form_cached_values', array())
+                ),
+                $parameters
+            )
+        );
     }
 }
