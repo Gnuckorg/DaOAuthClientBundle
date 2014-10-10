@@ -15,6 +15,7 @@ use Da\OAuthClientBundle\Security\Core\User\OAuthUserInterface;
  */
 class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
 {
+    protected $id = 0;
     protected $username = '';
     protected $email = '';
     protected $password = '';
@@ -30,6 +31,7 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
      */
     public function setFromResponse(UserResponseInterface $response)
     {
+        $this->id = $response->getId();
         $this->username = $response->getNickname();
 		$this->email = $response->getEmail();
         $this->roles = json_decode($response->getRoles(), true);
@@ -64,6 +66,16 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
     public function getSalt()
     {
         return null;
+    }
+
+    /**
+     * Get the sso id of the user.
+     *
+     * @return integer The sso id.
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
