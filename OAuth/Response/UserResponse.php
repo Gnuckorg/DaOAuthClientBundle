@@ -11,16 +11,27 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse;
  */
 class UserResponse extends PathUserResponse
 {
-	/**
+    /**
      * Constructor.
      */
-	public function __construct()
-	{
-		$this->setPaths(array('roles' => 'roles'));
-		$this->setPaths(array('raw' => 'raw'));
-	}
+    public function __construct()
+    {
+        $this->setPaths(array('id' => 'id'));
+        $this->setPaths(array('roles' => 'roles'));
+        $this->setPaths(array('raw' => 'raw'));
+    }
 
-	/**
+    /**
+     * Get the sso id of the user.
+     *
+     * @return string The sso id of the user.
+     */
+    public function getId()
+    {
+        return $this->getValueForPath('id');
+    }
+
+    /**
      * Get the roles of the user.
      *
      * @return string The json encoded roles of the user.
