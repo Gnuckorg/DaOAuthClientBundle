@@ -28,7 +28,7 @@ class UserResponse extends PathUserResponse
      */
     public function getId()
     {
-        return $this->getValueForPath('id');
+        return (int)$this->getValueForPath('id');
     }
 
     /**
