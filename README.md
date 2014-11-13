@@ -213,6 +213,7 @@ class MyResourceOwner extends GenericOAuth2ResourceOwner
 
     # DaOAuthClient Configuration
     da_oauth_client:
+        default_resource_owner: my
         resource_owners:
             my:
                 type:              my
