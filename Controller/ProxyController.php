@@ -90,13 +90,16 @@ class ProxyController extends ContainerAware
 
     /**
      * @Route("/disconnect")
-     * @Template()
      */
     public function disconnectAction(Request $request)
     {
-        $disconnectionUrl = $this->container->get('router')->generate('disconnect');
+        $securityContext = $this->container->get('security.context');
+        $session = $request->getSession();
 
-        return new RedirectResponse($disconnectionUrl);
+        $securityContext->setToken(null);
+        $session->set('_security_'.$firewallName, null);
+
+        return new Response('');
     }
 
     /**
@@ -116,6 +119,7 @@ class ProxyController extends ContainerAware
     {
         $session = $request->getSession();
         $securityContext = $this->container->get('security.context');
+        $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
 
         $defaultResourceOwnerName = $this->container->getParameter('da_oauth_client.default_resource_owner');
         $resourceOwner = $this->container->get('hwi_oauth.resource_owner.'.$defaultResourceOwnerName);
@@ -133,18 +137,21 @@ class ProxyController extends ContainerAware
         $parsedErrorUrl = parse_url($errorUrl);
         $parameters = array_merge(
             $requestParameters,
-            array('error_path' => $parsedErrorUrl['path']),
+            array(
+                'error_path' => $parsedErrorUrl['path'],
+                'logout' => 1
+            ),
             $additionalParameters
         );
 
         // Logout.
         if ($logout) {
             $securityContext->setToken(null);
-            $session->invalidate();
+            //$session->invalidate();
+            $session->set('_security_'.$firewallName, null);
         }
-        
+
         // Replace login target path to avoid loading a page for nothing.
-        $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
         $targetPathKey = sprintf('_security.%s.target_path', $firewallName);
         $targetPathBackup = $session->get($targetPathKey);
         $successUrl = $this->container->get('router')->generate('da_oauthclient_proxy_success', array(), true);
@@ -158,7 +165,7 @@ class ProxyController extends ContainerAware
         $session->set($targetPathKey, $targetPathBackup);
         $content = array(
             'status' => ProxyController::RESPONSE_STATUS_OK,
-            'content' => 'ok'
+            'content' => $session->getId()
         );
         $statusCode = $response->getStatusCode();
 
@@ -188,7 +195,7 @@ class ProxyController extends ContainerAware
     {
         $token = $this->container->get('security.context')->getToken();
 
-        if (200 === $statusCode) {
+        if (400 > $statusCode) {
             if (null === $token || $token instanceof AnonymousToken || !$token->isAuthenticated()) {
                 if (!isset($content['status']) || ProxyController::RESPONSE_STATUS_OK === $content['status']) {
                     $content = array(
