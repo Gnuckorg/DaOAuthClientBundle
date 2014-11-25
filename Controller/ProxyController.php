@@ -90,13 +90,16 @@ class ProxyController extends ContainerAware
 
     /**
      * @Route("/disconnect")
-     * @Template()
      */
     public function disconnectAction(Request $request)
     {
-        $disconnectionUrl = $this->container->get('router')->generate('disconnect');
+        $securityContext = $this->container->get('security.context');
+        $session = $request->getSession();
 
-        return new RedirectResponse($disconnectionUrl);
+        $securityContext->setToken(null);
+        $session->set('_security_'.$firewallName, null);
+
+        return new Response('');
     }
 
     /**
