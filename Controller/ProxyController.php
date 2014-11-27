@@ -93,8 +93,9 @@ class ProxyController extends ContainerAware
      */
     public function disconnectAction(Request $request)
     {
-        $securityContext = $this->container->get('security.context');
         $session = $request->getSession();
+        $securityContext = $this->container->get('security.context');
+        $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
 
         $securityContext->setToken(null);
         $session->set('_security_'.$firewallName, null);
