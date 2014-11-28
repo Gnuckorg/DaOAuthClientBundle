@@ -129,7 +129,7 @@ class ProxyController extends ContainerAware
         $requestParameters = $request->request->all();
         if (!empty($formName)) {
             $requestParameters = array(
-                $formName => $requestParameters,
+                $formName => $this->formatFormParameters($requestParameters),
                 'form_name' => $formName
             );
         }
@@ -233,6 +233,55 @@ class ProxyController extends ContainerAware
                 'Content-Type: application/json'
             )
         );
+    }
+
+    /**
+     * Format the form parameters.
+     *
+     * @param array $parameters The input parameters.
+     *
+     * @return array The formatted parameters.
+     */
+    protected function formatFormParameters(array $parameters)
+    {
+        $mappedFields = array(
+            'plainPassword_first' => 'plainPassword.first',
+            'plainPassword_second' => 'plainPassword.second'
+        );
+        $standardFields = array(
+            'username' => true,
+            '_username' => true,
+            'password' => true,
+            '_password' => true,
+            'password' => true,
+            'current_password' => true,
+            'email' => true,
+            'plainPassword.first' => true,
+            'plainPassword.second' => true,
+            '_remember_me' => true,
+            'remember_me' => true,
+            'redirect_uri' => true,
+            '_csrf_token' => true,
+            'csrf_token' => true
+        );
+        $formattedParameters = array();
+        $raw = isset($parameters['raw']) ? $parameters['raw'] : array();
+
+        foreach ($parameters as $key => $value) {
+            $realKey = isset($mappedFields[$key]) ? $mappedFields[$key] : $key;
+
+            if (isset($standardFields[$realKey])) {
+                $formattedParameters[$realKey] = $value;
+            } else {
+                $raw[$key] = $value;
+            }
+        }
+
+        if (!empty($raw)) {
+            $formattedParameters['raw'] = $raw;
+        }
+
+        return $formattedParameters;
     }
 
     /**
