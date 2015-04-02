@@ -46,4 +46,11 @@ interface IdentitySelectorInterface
      * @return string The secret.
      */
     function getSecret();
+
+    /**
+     * Get the API token of the selectionned identity.
+     *
+     * @return string The API token.
+     */
+    function getApiToken();
 }
