@@ -76,4 +76,12 @@ class BasicIdentitySelector implements IdentitySelectorInterface
     {
         return $this->identity['client_secret'];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getApiToken()
+    {
+        return $this->identity['api_token'];
+    }
 }
