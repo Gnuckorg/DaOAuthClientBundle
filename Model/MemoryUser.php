@@ -6,6 +6,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
+use Da\OAuthClientBundle\OAuth\Response\UserResponse;
 use Da\OAuthClientBundle\Security\Core\User\OAuthUserInterface;
 
 /**
@@ -31,16 +32,19 @@ class MemoryUser implements AdvancedUserInterface, OAuthUserInterface
      */
     public function setFromResponse(UserResponseInterface $response)
     {
-        $this->id = $response->getId();
         $this->username = $response->getNickname();
-		$this->email = $response->getEmail();
-        $this->roles = json_decode($response->getRoles(), true);
-        if (!is_array($this->roles)) {
-            $this->roles = array();
-        }
-        $this->raw = json_decode($response->getRaw(), true);
-        if (!is_array($this->raw)) {
-            $this->raw = array();
+        $this->email    = $response->getEmail();
+
+        if ($response instanceof UserResponse) {
+            $this->id = $response->getId();
+            $this->roles = json_decode($response->getRoles(), true);
+            if (!is_array($this->roles)) {
+                $this->roles = array();
+            }
+            $this->raw = json_decode($response->getRaw(), true);
+            if (!is_array($this->raw)) {
+                $this->raw = array();
+            }
         }
     }
 
