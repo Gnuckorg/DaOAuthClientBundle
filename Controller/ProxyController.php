@@ -98,7 +98,7 @@ class ProxyController extends ContainerAware
         $firewallName = $this->container->getParameter('hwi_oauth.firewall_name');
 
         $securityContext->setToken(null);
-        $session->set('_security_'.$firewallName, null);
+        $session->clear();
 
         return new Response('');
     }
@@ -149,7 +149,7 @@ class ProxyController extends ContainerAware
         if ($logout) {
             $securityContext->setToken(null);
             //$session->invalidate();
-            $session->set('_security_'.$firewallName, null);
+            $session->clear();
         }
 
         // Replace login target path to avoid loading a page for nothing.
