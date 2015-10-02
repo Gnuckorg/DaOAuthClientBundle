@@ -174,6 +174,16 @@ class ProxyController extends ContainerAware
             $content = json_decode($response->getContent(), true);
         }
 
+        if (null === $content) {
+            $content = array();
+        }
+
+        if (!isset($content['content'])) {
+            $content = array(
+                'content' => sprintf('(%s) %s', $statusCode, $response->getContent())
+            );
+        }
+
         // Re-up the security token.
         $token = $session->get('_security_'.$firewallName, null);
         if ($token) {
@@ -181,18 +191,20 @@ class ProxyController extends ContainerAware
             $securityContext->setToken($token);
         }
 
-        return $this->buildProxyResponse($statusCode, $content ? $content : array());
+        return $this->buildProxyResponse($request, $statusCode, $content, $authUrl);
     }
 
     /**
      * Build the proxy response.
      *
+     * @param Request $request    The request.
      * @param integer $statusCode The HTTP status code.
      * @param array   $content    The content of the response.
+     * @param string  $authUrl    The auth URL.
      *
      * @return Response The response.
      */
-    protected function buildProxyResponse($statusCode = 200, array $content = array())
+    protected function buildProxyResponse(Request $request, $statusCode = 200, array $content = array(), $authUrl = '')
     {
         $token = $this->container->get('security.context')->getToken();
 
@@ -213,13 +225,21 @@ class ProxyController extends ContainerAware
             (ProxyController::RESPONSE_STATUS_ERRORED === $content['status'] && $statusCode === 200)
         ) {
             $statusCode = 500;
+            $content['status'] = $statusCode;
 
             if (!isset($content['content'])) {
-                $content = array(
-                    'status' => ProxyController::RESPONSE_STATUS_ERRORED,
-                    'content' => 'security.error'
-                );
+                $content['content'] = 'security.error';
             }
+
+            $this->container->get('logger')->error(
+                'An error occured during a proxy attempt to the SSO',
+                array(
+                    'caller' => $request->getBaseUrl(),
+                    'method' => $request->getMethod(),
+                    'called' => $authUrl,
+                    'response' => $content['content']
+                )
+            );
         }
 
         if (isset($content['content'])) {
