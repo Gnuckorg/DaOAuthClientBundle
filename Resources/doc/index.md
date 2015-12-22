@@ -1,16 +1,13 @@
 DaOAuthClientBundle Documentation
 =================================
 
-This is the documentation of the bundle DaOAuthClientBundle.
+This bundle for Symfony2 allows to be the client of an oauth SSO server (especially an SSO server with several "authspaces").
 
+Here is a list of **how to**:
 
-Sections
---------
+- [Install and use the bundle](installation.md)
+- [Create your own resource owner (for your own SSO)](custom_resource_owner.md)
+- [Use several authspaces for a resource owner](multiple_authspaces.md)
+- [Persist users to a local database](local_persist.md)
 
-* [Use a Resource Owner on Multiple Authspaces](multiple_authspaces_use.md)
-
-
-What about the API server side?
--------------------------------
-
-Take a look at the [DaOAuthServerBundle](https://github.com/Gnuckorg/DaOAuthServerBundle)!
+Take a look at the [documentation of HWIOAuthBundle](https://github.com/hwi/HWIOAuthBundle) for more.
