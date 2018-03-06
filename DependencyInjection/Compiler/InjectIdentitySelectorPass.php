@@ -35,9 +35,12 @@ class InjectIdentitySelectorPass implements CompilerPassInterface
         $resourceOwners = $container->getParameter('hwi_oauth.resource_owners');
 
         foreach ($resourceOwners as $name) {
-            $resourceOwner = $container->getDefinition(
-                sprintf('hwi_oauth.resource_owner.%s', $name)
-            );
+            $serviceName = sprintf('hwi_oauth.resource_owner.%s', $name);
+            if (!$container->hasDefinition($serviceName)) {
+                continue;
+            }
+
+            $resourceOwner = $container->getDefinition($serviceName);
 
             $class = new \ReflectionClass($resourceOwner->getClass());
 
