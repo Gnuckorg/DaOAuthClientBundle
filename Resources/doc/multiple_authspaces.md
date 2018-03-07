@@ -1,17 +1,12 @@
-DaOAuthClientBundle - Use a Resource Owner on Multiple Authspaces
-=================================================================
+Use several authspaces for a resource owner
+===========================================
 
 Here is the steps to use a same resource owner on many authspaces in the same application.
 
-Step 1: Define your resource owner class
-----------------------------------------
-
-Take a look at the main [README](https://github.com/Gnuckorg/DaOAuthClientBundle/blob/master/README.md).
-
-Step 2: Set the config
+Step 1: Set the config
 ----------------------
 
-``` yaml
+```yaml
     # app/config/config.yml
 
     # ...
@@ -37,16 +32,12 @@ Step 2: Set the config
                 revoke_token_url:  'https://my-oauth-server-domain/oauth/v2/revoke'
                 disconnection_url: 'https://my-oauth-server-domain/oauth/v2/disconnect'
                 infos_url:         'https://my-oauth-server-domain/api/infos'
-        #fosub:  # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-        #    username_iterations: 5
-        #    properties:
-        #        my: username
 ```
 
-Step 3: Import the routing
+Step 2: Import the routing
 --------------------------
 
-``` yaml
+```yaml
     # app/config/routing.yml
 
     # ...
@@ -59,12 +50,12 @@ Step 3: Import the routing
         pattern: /authspace2/login/check-my
 ```
 
-Step 4: Set the security
+Step 3: Set the security
 ------------------------
 
 Here is the minimal configuration for the security you will need to use the oauth authentication with your resource owner:
 
-``` yaml
+```yaml
     # app/config/security.yml
 
     security:
@@ -74,8 +65,6 @@ Here is the minimal configuration for the security you will need to use the oaut
         providers:
             da_oauth_client:
                 id: da_oauth_client.user_provider.memory
-            #fos_userbundle: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-            #    id: fos_user.user_manager
 
         firewalls:
             dev:
@@ -99,8 +88,6 @@ Here is the minimal configuration for the security you will need to use the oaut
                     failure_path: "/login/authspace1"
                     oauth_user_provider:
                         service: da_oauth_client.user_provider.memory
-                    #oauth_user_provider: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-                    #    service: da_oauth_client.user_provider.fosub
                 logout:
                     # BUG: https://github.com/sensiolabs/SensioDistributionBundle/commit/2a518e7c957b66c9478730ca95f67e16ccdc982b
                     invalidate_session: false
@@ -114,8 +101,6 @@ Here is the minimal configuration for the security you will need to use the oaut
                     failure_path: "/login/authspace2"
                     oauth_user_provider:
                         service: da_oauth_client.user_provider.memory
-                    #oauth_user_provider: # ONLY IF YOU WANT TO PERSIST THE USERS WITH FOSUB
-                    #    service: da_oauth_client.user_provider.fosub
                 logout:
                     # BUG: https://github.com/sensiolabs/SensioDistributionBundle/commit/2a518e7c957b66c9478730ca95f67e16ccdc982b
                     invalidate_session: false
