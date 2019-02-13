@@ -84,4 +84,12 @@ class BasicIdentitySelector implements IdentitySelectorInterface
     {
         return $this->identity['api_token'];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAuthorizationUrl()
+    {
+        return isset($this->identity['authorization_url']) ? $this->identity['authorization_url'] : null;
+    }
 }
