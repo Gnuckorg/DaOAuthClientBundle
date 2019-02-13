@@ -53,4 +53,11 @@ interface IdentitySelectorInterface
      * @return string The API token.
      */
     function getApiToken();
+
+    /**
+     * Get the Authorization URL of the selectionned identity.
+     *
+     * @return string|null The Authorization URL.
+     */
+    function getAuthorizationUrl();
 }

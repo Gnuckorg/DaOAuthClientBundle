@@ -49,6 +49,9 @@ class MultiTokensOAuth2ResourceOwner extends GenericOAuth2ResourceOwner implemen
             $this->identitySelector->setIdentities($options['identity']);
             $options['client_id'] = $this->identitySelector->getId();
             $options['client_secret'] = $this->identitySelector->getSecret();
+            if (null !== $this->identitySelector->getAuthorizationUrl()) {
+                $options['authorization_url'] = $this->identitySelector->getAuthorizationUrl();
+            }
 
             unset($options['identity']);
         }

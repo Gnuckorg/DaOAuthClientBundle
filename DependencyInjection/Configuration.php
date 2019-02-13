@@ -121,6 +121,7 @@ class Configuration implements ConfigurationInterface
                                                     ->cannotBeEmpty()
                                                 ->end()
                                                 ->scalarNode('api_token')->end()
+                                                ->scalarNode('authorization_url')->defaultNull()->end()
                                             ->end()
                                         ->end()
                                     ->end()
